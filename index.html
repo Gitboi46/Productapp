@@ -334,15 +334,18 @@
     .shoe-card:nth-child(12) { animation-delay: 1.2s; }
     .shoe-card:nth-child(13) { animation-delay: 1.3s; }
    
+    /* Updated: More transparent image container */
     .model-wrap {
       height: 190px;
-      background: linear-gradient(135deg, #0a2a2a, #001a1a);
+      background: linear-gradient(135deg, rgba(10, 42, 42, 0.25), rgba(0, 26, 26, 0.15));
       border-radius: 18px;
       overflow: hidden;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0, 255, 204, 0.1);
     }
     .model-wrap img {
       width: 100%;
@@ -360,14 +363,14 @@
     }
     .info h3 { font-size: 18px; margin-bottom: 5px; font-weight: 600; color: #ffb10a; }
     .info .price { opacity: 0.7; font-size: 15px; margin-bottom: 15px; color: #ffffff; }
-    .btn-3d-home {
-      background: #fff;
+    .btn-order-now {
+      background: linear-gradient(135deg, #e59c00, #ffb10a);
       color: #000;
       border: none;
       padding: 14px 20px;
       border-radius: 30px;
-      font-weight: 600;
-      font-size: 13px;
+      font-weight: 700;
+      font-size: 14px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -378,29 +381,24 @@
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .btn-3d-home::before {
+    .btn-order-now::before {
       content: '';
       position: absolute;
       top: 0; left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
       transition: left 0.6s;
     }
-    .btn-3d-home:hover {
-      background: #e59c00;
-      color: #000;
+    .btn-order-now:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 255, 204, 0.4);
+      box-shadow: 0 8px 25px rgba(255, 145, 11, 0.5);
     }
-    .btn-3d-home:hover::before {
-      left: 100%;
-    }
-    .btn-3d-home:active { 
-      transform: scale(0.97); 
-      background: #e59c00; 
-    }
+    .btn-order-now:hover::before { left: 100%; }
+    .btn-order-now:active { transform: scale(0.97); }
 
     /* ADVERTISEMENT BANNER */
     .ad-banner {
@@ -477,137 +475,7 @@
       backdrop-filter: blur(10px);
     }
     .back-to-video-btn:active { transform: translateX(-50%) scale(0.95); }
-    #arDetailView {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      display: none;
-      z-index: 110;
-      background: transparent;
-      overflow: hidden;
-    }
-   
-    #arModelContainer {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      z-index: 111;
-      touch-action: none;
-    }
-   
-    #ar3DModel {
-      width: 100%;
-      height: 100%;
-      --poster-color: transparent;
-      background-color: transparent !important;
-      touch-action: none !important;
-    }
 
-    .top-bar {
-      position: fixed;
-      top: 20px; left: 15px; right: 15px;
-      display: flex;
-      justify-content: center;
-      z-index: 115;
-      pointer-events: none;
-    }
-    .model-name-badge {
-      background: rgba(0,0,0,0.4);
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #00ffcc;
-      backdrop-filter: blur(10px);
-      pointer-events: auto;
-    }
-    .gesture-hint {
-      position: fixed;
-      top: 70px; left: 50%;
-      transform: translateX(-50%);
-      font-size: 11px;
-      color: #f9f9f9;
-      text-align: center;
-      background: rgba(0,0,0,0.3);
-      padding: 8px 16px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      z-index: 115;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-    }
-    .gesture-hint.hidden { opacity: 0; }
-    .bottom-bar {
-      position: fixed;
-      bottom: 25px; left: 15px; right: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      z-index: 115;
-      pointer-events: none;
-    }
-   
-    .capture-btn {
-      background: rgba(0,0,0,0.4);
-      border: 2px solid rgba(255,255,255,0.4);
-      color: #f8f8f8;
-      padding: 14px 35px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      pointer-events: auto;
-    }
-    .capture-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
-    .order-btn {
-      background: linear-gradient(135deg, #e59c00, #e59c00);
-      color: white;
-      border: none;
-      padding: 14px 40px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      max-width: 280px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 20px rgba(0,255,204,0.4);
-      pointer-events: auto;
-    }
-    .order-btn:active { transform: scale(0.97); }
-
-    .action-row {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-      max-width: 280px;
-      justify-content: center;
-    }
-    .action-btn {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.2);
-      color: #ffb10a;
-      padding: 10px 18px;
-      border-radius: 20px;
-      font-size: 11px;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      flex: 1;
-      text-align: center;
-      pointer-events: auto;
-    }
-    .action-btn:active { background: rgba(255,255,255,0.1); }
-    #captureCanvas { display: none; }
     .loading-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -633,10 +501,9 @@
 </head>
 <body>  
   <video id="cameraBackground" autoplay playsinline></video>
-  <canvas id="captureCanvas"></canvas>
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loader"></div>
-    <div style="color:#00ffcc;">Loading Model...</div>
+    <div style="color:#00ffcc;">Loading...</div>
   </div>
   <div id="introScreen">
     <div class="intro-ripple"></div>
@@ -680,57 +547,28 @@
     <div class="models-scroll-container" id="scrollContainer">
       <div class="models-header">
         <h2>Choose Your Product</h2>
-        <p>Select a Product to view in AR</p>
+        <p>Select a Product to Order</p>
       </div>
       <div class="shoes-grid" id="shoesGrid"></div>
     </div>
     <button class="back-to-video-btn" id="backToVideoBtn">Back to Video</button>
   </div>
 
-  <!-- AR DETAIL VIEW -->
-  <div id="arDetailView">
-    <div id="arModelContainer">
-      <img id="ar3DModel" src="" alt="Product" style="width: 100%; height: 100%; object-fit: contain; background: transparent;">
-    </div>
-
-    <div class="top-bar">
-      <div class="model-name-badge" id="modelName">Sneaker</div>
-    </div>
-   
-    <div class="gesture-hint" id="gestureHint">
-      One finger to rotate • Two fingers to move • Pinch to zoom
-    </div>
-    <div class="bottom-bar">
-      <button class="capture-btn" id="captureBtn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"/>
-          <circle cx="12" cy="12" r="4"/>
-        </svg>
-        Capture
-      </button>
-      <button class="order-btn" id="orderBtn">Order Now</button>
-      <div class="action-row">
-        <button class="action-btn" id="replayBtn">Replay</button>
-        <button class="action-btn" id="backBtn">Back</button>
-      </div>
-    </div>
-  </div>
-
   <script>
     const shoes = [
-  { name: "Book Marker", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Book%20Marker.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Book%20Marker.png" },
-  { name: "Calander", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Calander.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Calander.png" },
-  { name: "Coffee Mug", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Coffee%20mug.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Coffee%20mug.png" },
-  { name: "Story Book", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Story%20Book.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Story%20Book.png" },
-  { name: "Diary", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Dairy.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Dairy.png" },
-  { name: "Bottle", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Bottle.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Bottle.png" },
-  { name: "Drawing Book", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Drawing%20book.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Drawing%20book.png" },
-  { name: "Fridge Magnet", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Fridge%20Magnet.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Fridge%20Magnet.png" },
-  { name: "Key Chain", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Key%20Chain.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Key%20Chain.png" },
-  { name: "Photo Frame", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Photo%20Frame.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Photo%20Frame.png" },
-  { name: "Sticker", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Sticker.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Sticker.png" },
-  { name: "Tota Bag", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Tota%20bag.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Tota%20bag.png" },
-  { name: "Pocket Card", price: "INR", model: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/pocket%20card.png", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/pocket%20card.png" }
+  { name: "Book Marker", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Book%20Marker.png" },
+  { name: "Calander", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Calander.png" },
+  { name: "Coffee Mug", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Coffee%20mug.png" },
+  { name: "Story Book", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Story%20Book.png" },
+  { name: "Diary", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Dairy.png" },
+  { name: "Bottle", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Bottle.png" },
+  { name: "Drawing Book", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Drawing%20book.png" },
+  { name: "Fridge Magnet", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Fridge%20Magnet.png" },
+  { name: "Key Chain", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Key%20Chain.png" },
+  { name: "Photo Frame", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Photo%20Frame.png" },
+  { name: "Sticker", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Sticker.png" },
+  { name: "Tota Bag", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Tota%20bag.png" },
+  { name: "Pocket Card", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/pocket%20card.png" }
 ];
     const ORDER_URL = "https://www.superkicks.in/";
 
@@ -740,27 +578,14 @@
       intro: $("introScreen"),
       video: $("videoScreen"),
       models: $("modelsScreen"),
-      ar: $("arDetailView"),
-      model3d: $("ar3DModel"),
-      arContainer: $("arModelContainer"),
       startBtn: $("startBtn"),
       visualizeBtn: $("visualizeBtn"),
       videoPlayer: $("videoPlayer"),
       shoesGrid: $("shoesGrid"),
-      modelName: $("modelName"),
-      loading: $("loadingOverlay"),
-      captureBtn: $("captureBtn"),
-      orderBtn: $("orderBtn"),
-      replayBtn: $("replayBtn"),
-      backBtn: $("backBtn"),
       backToVideoBtn: $("backToVideoBtn"),
       particlesContainer: $("particlesContainer"),
-      spatialContainer: $("spatialContainer"),
-      captureCanvas: $("captureCanvas"),
-      gestureHint: $("gestureHint")
+      spatialContainer: $("spatialContainer")
     };
-    let currentShoe = null;
-    let lastLoadedUrl = null;
 
     // PREMIUM HAPTIC ENGINE
     const Haptic = {
@@ -770,8 +595,6 @@
       success() { if(this.supported) navigator.vibrate([80, 80, 160]); },
       impact() { if(this.supported) navigator.vibrate(100); },
       excite() { if(this.supported) navigator.vibrate([60, 60, 60, 60, 120, 80, 200]); },
-      capture() { if(this.supported) navigator.vibrate([40, 100, 60]); },
-      order() { if(this.supported) navigator.vibrate([100, 80, 100, 80, 200, 150, 300]); },
       startup() { if(this.supported) navigator.vibrate([100, 80, 100, 80, 200, 100, 300]); },
       videoPulse: null,
       videoStart() {
@@ -787,11 +610,11 @@
       }
     };
 
-    // CAMERA INITIALIZATION — NO AUDIO
+    // CAMERA INITIALIZATION
     async function initCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ 
-          video: { facingMode: "environment" }   // audio removed
+          video: { facingMode: "environment" }
         });
         el.camera.srcObject = stream;
       } catch (e) { 
@@ -818,7 +641,7 @@
       Haptic.startup();
       el.intro.style.display = "none";
       el.video.style.display = "flex";
-      el.videoPlayer.play();            // promotional video still has sound
+      el.videoPlayer.play();
       Haptic.videoStart();
       createParticles();
       setTimeout(() => el.visualizeBtn.classList.add('visible'), 5000);
@@ -853,9 +676,14 @@
         <div class="info">
           <h3>${shoe.name}</h3>
           <div class="price">${shoe.price}</div>
-          <button class="btn-3d-home" data-i="${i}">View in AR</button>
+          <button class="btn-order-now">Order Now</button>
         </div>`;
       el.shoesGrid.appendChild(card);
+
+      card.querySelector('.btn-order-now').onclick = () => {
+        Haptic.excite();
+        window.open(ORDER_URL, '_blank');
+      };
 
       if ((i + 1) % 2 === 0 && i !== shoes.length - 1) {
         const ad = document.createElement("div");
@@ -869,93 +697,6 @@
         el.shoesGrid.appendChild(ad);
       }
     });
-
-    document.querySelectorAll('.btn-3d-home').forEach(btn => {
-      btn.onclick = () => {
-        Haptic.excite();
-        const i = parseInt(btn.dataset.i);
-        currentShoe = shoes[i];
-        el.modelName.textContent = currentShoe.name;
-        el.loading.classList.add('active');
-        el.models.style.display = "none";
-        el.ar.style.display = "block";
-        el.arContainer.style.display = "block";
-
-        const newUrl = currentShoe.model;
-        if (lastLoadedUrl === newUrl) {
-          el.model3d.src = '';
-          requestAnimationFrame(() => {
-            el.model3d.src = newUrl + (newUrl.includes('?') ? '&' : '?') + Date.now();
-          });
-        } else {
-          el.model3d.src = newUrl;
-        }
-        lastLoadedUrl = newUrl;
-
-        el.model3d.addEventListener('load', () => {
-          el.loading.classList.remove('active');
-        }, { once: true });
-      };
-    });
-
-    el.captureBtn.onclick = async () => {
-      Haptic.capture();
-      const canvas = el.captureCanvas;
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      ctx.drawImage(el.camera, 0, 0, canvas.width, canvas.height);
-      
-      const productImg = el.model3d;
-      const iw = productImg.naturalWidth;
-      const ih = productImg.naturalHeight;
-      const cw = canvas.width;
-      const ch = canvas.height;
-      if (iw > 0 && ih > 0) {
-        const iar = iw / ih;
-        const car = cw / ch;
-        let dx = 0, dy = 0, dw = cw, dh = ch;
-        if (iar > car) {
-          dh = ch;
-          dw = dh * iar;
-          dx = (cw - dw) / 2;
-        } else {
-          dw = cw;
-          dh = dw / iar;
-          dy = (ch - dh) / 2;
-        }
-        ctx.drawImage(productImg, dx, dy, dw, dh);
-      }
-      
-      canvas.toBlob(blob => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `${currentShoe?.name.replace(/ /g, '_') || 'AR'}_Capture.png`;
-        a.click();
-        Haptic.success();
-      });
-    };
-
-    el.orderBtn.onclick = () => {
-      Haptic.order();
-      window.open(ORDER_URL, '_blank');
-    };
-
-    el.replayBtn.onclick = () => { 
-      Haptic.success();
-      el.ar.style.display = "none"; 
-      el.video.style.display = "flex"; 
-      el.videoPlayer.currentTime = 0; 
-      el.videoPlayer.play(); 
-      Haptic.videoStart(); 
-      createParticles(); 
-    };
-
-    el.backBtn.onclick = () => { 
-      Haptic.double();
-      el.ar.style.display = "none"; 
-      el.models.style.display = "flex"; 
-    };
   </script>
 </body>
 </html>
