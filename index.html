@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sneakers AR Experience</title>
+  <title>AR Shopping Experience</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     html, body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #001a1a;
-      color: #f2f2f2; 
+      color: #f2f2f2;
       width: 100%;
-      height: 100%;
+      height: 100%;   
       overflow: hidden;
     }
     #cameraBackground {
@@ -69,19 +68,18 @@
       50% { transform: scale(1.02); box-shadow: 0 0 60px rgba(0, 255, 204, 0.4); }
     }
     .press-button:active { transform: scale(0.95); }
-    #videoScreen {
+
+    #videoScreen, #modelsScreen {
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       z-index: 90;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      perspective: 1200px;
       overflow: hidden;
       background: transparent;
     }
-   
+    #videoScreen { display: none; align-items: center; justify-content: center; perspective: 1200px; }
+    #modelsScreen { display: none; flex-direction: column; }
+
     .particles-container {
       position: absolute;
       top: 0; left: 0;
@@ -90,44 +88,30 @@
       overflow: hidden;
       z-index: 2;
     }
-   
+
     .particle {
       position: absolute;
       border-radius: 50%;
       animation: floatParticle linear infinite;
     }
-    .particle.glow {
-      background: radial-gradient(circle, rgba(0, 255, 204, 0.7) 0%, rgba(0, 255, 204, 0.4) 40%, transparent 70%);
-      box-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
-    }
-    .particle.spark {
-      background: radial-gradient(circle, rgba(0, 255, 230, 0.8) 0%, rgba(0, 220, 200, 0.5) 50%, transparent 70%);
-      box-shadow: 0 0 5px rgba(0, 255, 230, 0.4);
-    }
-    .particle.orb {
-      background: radial-gradient(circle, rgba(0, 220, 180, 0.8) 0%, rgba(0, 255, 204, 0.4) 50%, transparent 70%);
-      box-shadow: 0 0 6px rgba(0, 220, 180, 0.4);
-    }
+    .particle.glow { background: radial-gradient(circle, rgba(0,255,204,0.7) 0%, transparent 70%); box-shadow: 0 0 6px rgba(0,255,204,0.5); }
+    .particle.spark { background: radial-gradient(circle, rgba(0,255,230,0.8) 0%, transparent 70%); box-shadow: 0 0 5px rgba(0,255,230,0.4); }
+    .particle.orb { background: radial-gradient(circle, rgba(0,220,180,0.8) 0%, transparent 70%); box-shadow: 0 0 6px rgba(0,220,180,0.4); }
+
     @keyframes floatParticle {
       0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
       10% { opacity: 1; }
-      50% { opacity: 1; transform: translateY(50vh) rotate(360deg) scale(1); }
       90% { opacity: 0.8; }
       100% { transform: translateY(-50px) rotate(720deg) scale(0.5); opacity: 0; }
     }
-    .particle.sway {
-      animation: floatParticleSway linear infinite;
-    }
+    .particle.sway { animation: floatParticleSway linear infinite; }
     @keyframes floatParticleSway {
       0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity: 0; }
       10% { opacity: 1; }
-      25% { transform: translateY(75vh) translateX(20px) scale(0.8); }
-      50% { transform: translateY(50vh) translateX(-15px) scale(1); opacity: 1; }
-      75% { transform: translateY(25vh) translateX(15px) scale(0.9); }
-      90% { opacity: 0.7; }
+      50% { transform: translateY(50vh) translateX(-15px) scale(1); }
       100% { transform: translateY(-50px) translateX(0) scale(0.5); opacity: 0; }
     }
-   
+
     .sound-waves {
       position: fixed;
       bottom: 80px;
@@ -150,196 +134,147 @@
       0% { height: 5px; }
       100% { height: 28px; }
     }
-    .spatial-container {
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.1s ease-out;
-      will-change: transform;
-      z-index: 10;
-    }
-    .spatial-frame {
-      position: relative;
-      width: 220px; height: 390px;
-      transform-style: preserve-3d;
-    }
-   
-    .video-glow {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 250px; height: 420px;
-      border-radius: 20px;
-      background: radial-gradient(ellipse at center,
-        rgba(0, 255, 204, 0.25) 0%,
-        rgba(0, 220, 180, 0.15) 30%,
-        rgba(0, 180, 140, 0.08) 50%,
-        transparent 70%);
-      filter: blur(30px);
-      animation: bgGlowPulse 3s ease-in-out infinite;
-      pointer-events: none;
-      z-index: -1;
-    }
-    .video-glow-secondary {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 280px; height: 450px;
-      border-radius: 25px;
-      background: radial-gradient(ellipse at center,
-        rgba(0, 220, 180, 0.2) 0%,
-        rgba(0, 200, 160, 0.12) 35%,
-        transparent 65%);
-      filter: blur(40px);
-      animation: bgGlowPulse2 4s ease-in-out infinite;
-      pointer-events: none;
-      z-index: -1;
-    }
-    @keyframes bgGlowPulse {
-      0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.05); }
-    }
-    @keyframes bgGlowPulse2 {
-      0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-      50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.05); }
-    }
-   
+
+    .spatial-container { position: relative; transform-style: preserve-3d; transition: transform 0.1s ease-out; z-index: 10; }
+    .spatial-frame { position: relative; width: 220px; height: 390px; transform-style: preserve-3d; }
+    .video-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 250px; height: 420px; border-radius: 20px; background: radial-gradient(ellipse at center, rgba(0, 255, 204, 0.25) 0%, transparent 70%); filter: blur(30px); animation: bgGlowPulse 3s ease-in-out infinite; pointer-events: none; z-index: -1; }
+    .video-glow-secondary { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 280px; height: 450px; border-radius: 25px; background: radial-gradient(ellipse at center, rgba(0, 220, 180, 0.2) 0%, transparent 65%); filter: blur(40px); animation: bgGlowPulse2 4s ease-in-out infinite; pointer-events: none; z-index: -1; }
+    @keyframes bgGlowPulse { 0%,100% { opacity:0.5; transform:translate(-50%,-50%) scale(1); } 50% { opacity:0.7; transform:translate(-50%,-50%) scale(1.05); } }
+    @keyframes bgGlowPulse2 { 0%,100% { opacity:0.4; } 50% { opacity:0.6; transform:scale(1.05); } }
+
     .depth-layer-back { position: absolute; top: 8px; left: 8px; width: 204px; height: 374px; background: rgba(0,0,0,0.2); border-radius: 12px; transform: translateZ(-60px); }
     .depth-layer-mid { position: absolute; top: 4px; left: 4px; width: 212px; height: 382px; background: rgba(0,0,0,0.15); border-radius: 14px; transform: translateZ(-30px); }
-    .video-spatial-container {
-      position: relative;
-      width: 220px; height: 390px;
-      transform-style: preserve-3d;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0, 255, 204, 0.15);
-    }
-    #videoPlayer {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      border-radius: 15px;
-    }
-    .visualize-button {
-      position: absolute;
-      bottom: 15px; left: 50%;
-      transform: translateX(-50%);
-      padding: 8px 18px;
-      font-size: 10px;
-      font-weight: 500;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      color: #f7faf9;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      z-index: 10;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.5s ease;
-    }
+    .video-spatial-container { position: relative; width: 220px; height: 390px; transform-style: preserve-3d; border-radius: 15px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0, 255, 204, 0.15); }
+    #videoPlayer { width: 100%; height: 100%; object-fit: cover; border-radius: 15px; }
+    .visualize-button { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); padding: 8px 18px; font-size: 10px; font-weight: 500; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); color: #f7faf9; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; z-index: 10; opacity: 0; visibility: hidden; transition: all 0.5s ease; }
     .visualize-button.visible { opacity: 1; visibility: visible; }
     .visualize-button:active { transform: translateX(-50%) scale(0.95); }
-    .floor-shadow {
-      position: absolute;
-      bottom: -60px; left: 50%;
-      transform: translateX(-50%);
-      width: 180px; height: 80px;
-      background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 70%);
-      filter: blur(15px);
-    }
-    #modelsScreen {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 80;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      background: transparent;
-    }
-   
-    @keyframes fadeSlideIn {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
+    .floor-shadow { position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); width: 180px; height: 80px; background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, transparent 70%); filter: blur(15px); }
+
+    .models-scroll-container { flex: 1; overflow-y: auto; padding: 20px 12px; padding-bottom: 100px; }
+    .models-header { text-align: center; margin-bottom: 20px; padding: 20px 15px; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); border-radius: 15px; }
+    .models-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 5px; color: #fdaa10; }
+    .models-header p { font-size: 12px; opacity: 0.7; }
+
+    .shoes-grid { display: grid; grid-template-columns: 1fr; gap: 15px; max-width: 400px; margin: 0 auto; padding-bottom: 20px; }
+    .shoe-card { background: transparent; border-radius: 20px; overflow: visible; opacity: 0; animation: cardFadeIn 0.6s ease-out forwards; position: relative; transition: transform 0.3s ease; }
+    .shoe-card:nth-child(n) { animation-delay: calc(0.1s * var(--i)); }
+
     @keyframes cardFadeIn {
       0% { opacity: 0; transform: translateY(20px) scale(0.95); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
-   
-    .models-scroll-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 12px;
-      padding-bottom: 100px;
-    }
-    .models-header {
-      text-align: center;
-      margin-bottom: 20px;
-      padding: 20px 15px;
-      background: rgba(0,0,0,0.3);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      animation: fadeSlideIn 0.5s ease-out forwards;
-    }
-    .models-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 5px; color: #fdaa10; }
-    .models-header p { font-size: 12px; opacity: 0.7; color: #ffffff; }
-    .shoes-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 15px;
-      max-width: 400px;
-      margin: 0 auto;
-      padding-bottom: 20px;
-    }
-    .shoe-card {
-      background: transparent;
-      border-radius: 20px;
-      overflow: visible;
-      opacity: 0;
-      animation: cardFadeIn 0.6s ease-out forwards;
-      position: relative;
-      transition: transform 0.3s ease;
-    }
-    .shoe-card:hover {
-      transform: translateY(-6px);
-    }
-    .shoe-card:nth-child(1) { animation-delay: 0.1s; }
-    .shoe-card:nth-child(2) { animation-delay: 0.2s; }
-    .shoe-card:nth-child(3) { animation-delay: 0.3s; }
-    .shoe-card:nth-child(4) { animation-delay: 0.4s; }
-    .shoe-card:nth-child(5) { animation-delay: 0.5s; }
-    .shoe-card:nth-child(6) { animation-delay: 0.6s; }
-    .shoe-card:nth-child(7) { animation-delay: 0.7s; }
-    .shoe-card:nth-child(8) { animation-delay: 0.8s; }
-    .shoe-card:nth-child(9) { animation-delay: 0.9s; }
-    .shoe-card:nth-child(10) { animation-delay: 1.0s; }
-    .shoe-card:nth-child(11) { animation-delay: 1.1s; }
-    .shoe-card:nth-child(12) { animation-delay: 1.2s; }
-    .shoe-card:nth-child(13) { animation-delay: 1.3s; }
 
-    /* CLEAN & SIMPLE TRANSPARENT GREY PRODUCT CONTAINER */
     .model-wrap {
       height: 190px;
+      width: 280px;
+      margin: 0 auto;
       background: rgba(40, 40, 50, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 18px;
       overflow: hidden;
       position: relative;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 8px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .slider-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(12px);
-      box-shadow: 
-        inset 0 1px 1px rgba(255, 255, 255, 0.05),
-        0 8px 25px rgba(0, 0, 0, 0.5);
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
-    .model-wrap img {
-      width: 100%;
-      height: 100%;
+
+    .slide img, .slide video {
+      max-width: 88%;
+      max-height: 88%;
       object-fit: contain;
-      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .slide.video-slide video {
+      position: absolute;
+      width: 88%;
+      height: 88%;
+    }
+
+    .slide.image-slide {
+      z-index: 2;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .slide.video-slide {
+      z-index: 1;
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    .slider-container.video-active .image-slide {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+
+    .slider-container.video-active .video-slide {
+      opacity: 1;
+      transform: translateX(0);
+      z-index: 3;
+    }
+
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+      z-index: 10;
+      user-select: none;
+      opacity: 0.7;
+    }
+    .nav-arrow.left { left: 10px; }
+    .nav-arrow.right { right: 10px; }
+    .nav-arrow:active { opacity: 1; transform: translateY(-50%) scale(0.9); }
+
+    .dots-indicator {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 11;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      transition: all 0.3s ease;
+    }
+    .dot.active {
+      background: #00ffcc;
+      box-shadow: 0 0 8px #00ffcc;
+      transform: scale(1.3);
     }
 
     .info {
@@ -352,7 +287,6 @@
     }
     .info h3 { font-size: 18px; margin-bottom: 5px; font-weight: 600; color: #ffb10a; }
     .info .price { opacity: 0.7; font-size: 15px; margin-bottom: 15px; color: #ffffff; }
-
     .btn-order-now {
       background: linear-gradient(135deg, #e59c00, #ffb10a);
       color: #000;
@@ -370,17 +304,15 @@
       overflow: hidden;
     }
     .btn-order-now:active {
-      background: linear-gradient(135deg, #ffffff, #ffffff);
-      color: #000;
       transform: scale(0.97);
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
+      box-shadow: 0 0 20px rgba(0, 255,204,0.6);
     }
     .btn-order-now::after {
       content: '';
       position: absolute;
       top: 50%; left: 50%;
       width: 0; height: 0;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255,255,255,0.3);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       transition: width 0.4s, height 0.4s;
@@ -390,7 +322,6 @@
       height: 300px;
     }
 
-    /* AD BANNER */
     .ad-banner {
       margin: 20px auto;
       max-width: 360px;
@@ -399,24 +330,13 @@
       border-radius: 20px;
       padding: 18px 15px;
       text-align: center;
-      position: relative;
-      overflow: hidden;
       backdrop-filter: blur(12px);
-      animation: cardFadeIn 0.8s ease-out forwards;
       box-shadow: 0 8px 32px rgba(255, 145, 11, 0.2);
     }
     .ad-banner h3 { font-size: 20px; color: #ffb10a; margin-bottom: 6px; font-weight: 700; }
     .ad-banner p { font-size: 14px; color: #ffffff; margin-bottom: 10px; }
-    .ad-banner .highlight {
-      font-size: 24px; font-weight: 900;
-      background: linear-gradient(90deg, #ffb10a, #ff6b00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .ad-banner .cta {
-      margin-top: 12px; padding: 10px 24px; background: #ffb10a; color: #000;
-      border: none; border-radius: 30px; font-weight: 700; font-size: 13px; cursor: pointer;
-    }
+    .ad-banner .highlight { font-size: 24px; font-weight: 900; background: linear-gradient(90deg, #ffb10a, #ff6b00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .ad-banner .cta { margin-top: 12px; padding: 10px 24px; background: #ffb10a; color: #000; border: none; border-radius: 30px; font-weight: 700; font-size: 13px; cursor: pointer; }
 
     .back-to-video-btn {
       position: fixed;
@@ -436,8 +356,8 @@
     .back-to-video-btn:active { transform: translateX(-50%) scale(0.95); }
   </style>
 </head>
-<body>  
-  <video id="cameraBackground" autoplay playsinline></video>
+<body>
+  <video id="cameraBackground" autoplay playsinline muted></video>
 
   <div id="introScreen">
     <div class="intro-ripple"></div>
@@ -459,6 +379,7 @@
       <div class="wave-bar" style="animation-delay: 0.15s;"></div>
       <div class="wave-bar" style="animation-delay: 0.05s;"></div>
     </div>
+
     <div class="spatial-container" id="spatialContainer">
       <div class="spatial-frame">
         <div class="video-glow"></div>
@@ -466,7 +387,8 @@
         <div class="depth-layer-back"></div>
         <div class="depth-layer-mid"></div>
         <div class="video-spatial-container">
-          <video id="videoPlayer" playsinline loop>
+          <!-- Removed muted so audio plays after user gesture -->
+          <video id="videoPlayer" playsinline loop preload="metadata">
             <source src="https://raw.githubusercontent.com/ElwinRoy/ModelViewer/main/Avatar%20IV%20Standing.mp4" type="video/mp4">
           </video>
           <button class="visualize-button" id="visualizeBtn">View Products</button>
@@ -476,7 +398,6 @@
     </div>
   </div>
 
-  <!-- MODELS SCREEN -->
   <div id="modelsScreen">
     <div class="models-scroll-container" id="scrollContainer">
       <div class="models-header">
@@ -490,21 +411,19 @@
 
   <script>
     const shoes = [
-      { name: "Book Marker", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Book%20Marker.png" },
-      { name: "Calander", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Calander.png" },
-      { name: "Coffee Mug", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Coffee%20mug.png" },
-      { name: "Story Book", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Story%20Book.png" },
-      { name: "Diary", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Dairy.png" },
-      { name: "Bottle", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Bottle.png" },
-      { name: "Drawing Book", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Drawing%20book.png" },
-      { name: "Fridge Magnet", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Fridge%20Magnet.png" },
-      { name: "Key Chain", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Key%20Chain.png" },
-      { name: "Photo Frame", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Photo%20Frame.png" },
-      { name: "Sticker", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Sticker.png" },
-      { name: "Tota Bag", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Tota%20bag.png" },
-      { name: "Pocket Card", price: "INR", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/pocket%20card.png" }
+      { name: "Book Marker",   price: "₹550.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Book%20Marker.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Book-Mark.mp4", link: "https://test.4point2tech.com/product/bookmarks/" },
+      { name: "Calendar",      price: "₹199.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Calander.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Calender.mp4", link: "https://test.4point2tech.com/product/calendar/" },
+      { name: "Story Book",    price: "₹499.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Story%20Book.png", video: "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4", link: "https://test.4point2tech.com/product/story-book/" },
+      { name: "Diary",         price: "₹599.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Dairy.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Diary-Book.mp4", link: "https://test.4point2tech.com/product/dairy/" },
+      { name: "Bottle",        price: "₹449.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Bottle.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Water-Bottle.mp4", link: "https://test.4point2tech.com/product/water-bottle/" },
+      { name: "Drawing Book",  price: "₹199.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Drawing%20book.png", video: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-modeling-in-a-studio-1256-large.mp4", link: "https://test.4point2tech.com/product/drawing-book/" },
+      { name: "Fridge Magnet", price: "₹499.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Fridge%20Magnet.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Fridge-Magnet.mp4", link: "https://test.4point2tech.com/product/fridge-magnet/" },
+      { name: "Key Chain",     price: "₹149.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Key%20Chain.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Key-Chain.mp4", link: "https://test.4point2tech.com/product/key-chain/" },
+      { name: "Photo Frame",   price: "₹399.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Photo%20Frame.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Photo-Frame.mp4", link: "https://test.4point2tech.com/product/photo-frame/" },
+      { name: "Sticker",       price: "₹199.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Sticker.png", video: "https://assets.mixkit.co/videos/preview/mixkit-woman-walking-in-a-field-with-dry-grass-1253-large.mp4", link: "https://test.4point2tech.com/product/testing-11/" },
+      { name: "Tote Bag",      price: "₹599.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/Tota%20bag.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Totle-Bag.mp4", link: "https://test.4point2tech.com/product/tote-bag/" },
+      { name: "Pocket Card",   price: "₹199.00", img: "https://raw.githubusercontent.com/Gitboi46/Productapp/main/pocket%20card.png", video: "https://raw.githubusercontent.com/Gitboi46/Test/main/Pocket-Cards.mp4", link: "https://test.4point2tech.com/product/pocket-card/" }
     ];
-    const ORDER_URL = "https://www.superkicks.in/";
 
     const $ = id => document.getElementById(id);
     const el = {
@@ -522,12 +441,12 @@
 
     const Haptic = {
       supported: 'vibrate' in navigator,
-      excite() { if(this.supported) navigator.vibrate([60, 60, 60, 60, 120, 80, 200]); },
-      startup() { if(this.supported) navigator.vibrate([100, 80, 100, 80, 200, 100, 300]); },
+      excite() { if(this.supported) navigator.vibrate([60,60,60,60,120,80,200]); },
+      startup() { if(this.supported) navigator.vibrate([100,80,100,80,200,100,300]); },
       videoPulse: null,
       videoStart() {
         if(!this.supported) return;
-        const pattern = [40, 80, 40, 80, 40, 120];
+        const pattern = [40,80,40,80,40,120];
         const pulse = () => navigator.vibrate(pattern);
         pulse();
         this.videoPulse = setInterval(pulse, 1200);
@@ -542,8 +461,8 @@
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         el.camera.srcObject = stream;
-      } catch (e) { 
-        document.body.style.background = "#001a1a"; 
+      } catch (e) {
+        document.body.style.background = "#001a1a";
       }
     }
     initCamera();
@@ -552,13 +471,22 @@
       const c = el.particlesContainer; c.innerHTML = '';
       for (let i = 0; i < 12; i++) {
         const p = document.createElement('div');
-        p.className = `particle ${['glow','spark','orb'][i%3]} ${i%2?'sway':''}`;
-        const s = Math.random()*3+2;
-        p.style.width = p.style.height = s+'px';
-        p.style.left = Math.random()*100+'%';
-        p.style.animationDuration = (Math.random()*5+6)+'s';
-        p.style.animationDelay = Math.random()*6+'s';
+        p.className = `particle ${['glow','spark','orb'][i%3]} ${i%2 ? 'sway' : ''}`;
+        const s = Math.random()*3 + 2;
+        p.style.width = p.style.height = s + 'px';
+        p.style.left = Math.random()*100 + '%';
+        p.style.animationDuration = (Math.random()*5 + 6) + 's';
+        p.style.animationDelay = Math.random()*6 + 's';
         c.appendChild(p);
+      }
+    }
+
+    // Play main video with audio after user gesture
+    async function playMainVideo() {
+      try {
+        await el.videoPlayer.play();
+      } catch (err) {
+        console.log("Play interrupted:", err);
       }
     }
 
@@ -566,7 +494,7 @@
       Haptic.startup();
       el.intro.style.display = "none";
       el.video.style.display = "flex";
-      el.videoPlayer.play();
+      playMainVideo(); // now plays with sound
       Haptic.videoStart();
       createParticles();
       setTimeout(() => el.visualizeBtn.classList.add('visible'), 5000);
@@ -575,7 +503,7 @@
     el.visualizeBtn.onclick = () => {
       Haptic.excite();
       Haptic.videoStop();
-      el.videoPlayer.pause();
+      el.videoPlayer.pause(); // Explicit pause
       el.video.style.display = "none";
       el.models.style.display = "flex";
     };
@@ -584,39 +512,100 @@
       el.models.style.display = "none";
       el.video.style.display = "flex";
       el.videoPlayer.currentTime = 0;
-      el.videoPlayer.play();
+      playMainVideo(); // resume with audio
       Haptic.videoStart();
       createParticles();
     };
 
     shoes.forEach((shoe, i) => {
-      const card = document.createElement("div"); 
+      const card = document.createElement("div");
       card.className = "shoe-card";
+      card.style.setProperty('--i', i);
+
       card.innerHTML = `
         <div class="model-wrap">
-          <img src="${shoe.img}" alt="${shoe.name}">
+          <div class="slider-container" id="slider-${i}">
+            <div class="slide image-slide">
+              <img src="${shoe.img}" alt="${shoe.name}">
+            </div>
+            <div class="slide video-slide">
+              <video src="${shoe.video}" loop muted playsinline preload="none"></video>
+            </div>
+            <div class="nav-arrow left">←</div>
+            <div class="nav-arrow right">→</div>
+            <div class="dots-indicator">
+              <div class="dot active"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
         </div>
         <div class="info">
           <h3>${shoe.name}</h3>
           <div class="price">${shoe.price}</div>
           <button class="btn-order-now">Order Now</button>
         </div>`;
+
       el.shoesGrid.appendChild(card);
+
+      const container = card.querySelector('.slider-container');
+      const video = card.querySelector('video');
+      const dots = card.querySelectorAll('.dot');
+      const leftArrow = card.querySelector('.nav-arrow.left');
+      const rightArrow = card.querySelector('.nav-arrow.right');
+
+      const showImage = () => {
+        container.classList.remove('video-active');
+        video.pause();
+        video.currentTime = 0;
+        dots[0].classList.add('active');
+        dots[1].classList.remove('active');
+      };
+
+      const showVideo = () => {
+        container.classList.add('video-active');
+        video.play().catch(() => {});
+        dots[0].classList.remove('active');
+        dots[1].classList.add('active');
+      };
+
+      showImage(); // initial
+
+      leftArrow.onclick = (e) => {
+        e.stopPropagation();
+        showImage();
+      };
+
+      rightArrow.onclick = (e) => {
+        e.stopPropagation();
+        showVideo();
+      };
+
+      // Touch swipe
+      let touchStartX = 0;
+      const wrap = card.querySelector('.model-wrap');
+      wrap.addEventListener('touchstart', e => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      wrap.addEventListener('touchend', e => {
+        if (!touchStartX) return;
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) showVideo();
+          else showImage();
+        }
+        touchStartX = 0;
+      });
 
       card.querySelector('.btn-order-now').onclick = () => {
         Haptic.excite();
-        window.open(ORDER_URL, '_blank');
+        window.open(shoe.link, '_blank');
       };
 
       if ((i + 1) % 2 === 0 && i !== shoes.length - 1) {
         const ad = document.createElement("div");
         ad.className = "ad-banner";
-        ad.innerHTML = `
-          <h3>FLASH SALE!</h3>
-          <p>Get <span class="highlight">UPTO 50% OFF</span></p>
-          <p>Limited Time Offer on All Products</p>
-          <button class="cta" onclick="window.open('https://www.superkicks.in/collections/sale', '_blank')">Shop Now</button>
-        `;
+        ad.innerHTML = `<h3>FLASH SALE!</h3><p>Get <span class="highlight">UPTO 50% OFF</span></p><p>Limited Time Offer</p><button class="cta" onclick="window.open('https://test.4point2tech.com/', '_blank')">Shop Now</button>`;
         el.shoesGrid.appendChild(ad);
       }
     });
